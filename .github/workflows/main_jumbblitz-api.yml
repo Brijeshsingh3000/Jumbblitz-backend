@@ -25,7 +25,8 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-      
+          npm run test --if-present
+
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
 
@@ -41,7 +42,9 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+    permissions:
+      id-token: write #This is required for requesting the JWT
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -51,6 +54,13 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
       
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_462AB527F25949849BFB15C7213070FA }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6656EE09F1C14E19B4744F1D6D6D80D2 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_5254C73EFED246A4A4D0DBF6B49556C3 }}
+
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -58,4 +68,4 @@ jobs:
           app-name: 'Jumbblitz-api'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_13A5CFC9AB0A47979BDCE352054DD0AA }}
+          
