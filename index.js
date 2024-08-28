@@ -4,12 +4,12 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 const app = express();
 const httpserver = http.createServer(app);
-
+const PORT = process.env.PORT || 8000;
 app.use(cors());
 
 const io = new Server(httpserver, {
     cors: {
-        origin: "http://localhost:5000",
+        origin: ["http://localhost:5000", "http://192.168.1.4:5000"],
         methods: ["GET", "POST"],
         credentials: true
     }
