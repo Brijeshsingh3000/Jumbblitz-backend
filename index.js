@@ -146,6 +146,9 @@ io.on('connection', socket => {
 
     })
 })
+app.get("/health", (req, res) => {
+    res.send("<h1>ALL GOOD!</h1>")
+})
 httpserver.listen(3000, () => {
     console.log("SERVER CONNECTED on port 3000!");
 });
