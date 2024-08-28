@@ -1,12 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const app = express();
 const httpserver = http.createServer(app);
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT;
 app.use(cors());
-
 const io = new Server(httpserver, {
     cors: {
         origin: ["http://localhost:5000", "http://192.168.1.4:5000"],
@@ -149,6 +149,6 @@ io.on('connection', socket => {
 app.get("/health", (req, res) => {
     res.send("<h1>ALL GOOD!</h1>")
 })
-httpserver.listen(3000, () => {
-    console.log("SERVER CONNECTED on port 3000!");
+httpserver.listen(PORT, () => {
+    console.log(`server connected to ${PORT}`);
 });
